@@ -18,7 +18,6 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [upiLogoLoaded, setUpiLogoLoaded] = useState(false);
 
-  // Preload the UPI logo
   useEffect(() => {
     const img = new window.Image();
     img.onload = () => {
@@ -27,7 +26,6 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
     img.src = "/upi.svg";
   }, []);
 
-  // Store reference to the QR code canvas
   useEffect(() => {
     if (qrContainerRef.current) {
       const canvas = qrContainerRef.current.querySelector('canvas');
@@ -42,7 +40,7 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
     }
   }, [upiLogoLoaded, data.vpa]);
 
-  // Build the UPI URL
+
   const buildUpiUrl = () => {
     let upiUrl = `upi://pay?pa=${data.vpa}&pn=${encodeURIComponent(data.name)}`;
     
@@ -57,71 +55,71 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
     return upiUrl;
   };
 
-  // Create a new canvas with the QR code and text
+
   const createCanvasWithQR = () => {
     if (!qrCodeRef.current) {
       throw new Error("QR code canvas not found");
     }
 
-    // Create a new canvas
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       throw new Error("Could not get canvas context");
     }
 
-    // Set dimensions with padding
+
     const padding = 40;
     const textHeight = 60;
     canvas.width = qrCodeRef.current.width + padding * 2;
     canvas.height = qrCodeRef.current.height + padding * 2 + textHeight;
 
-    // Fill background
+
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Get QR code image data and modify it to be darker
+
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = qrCodeRef.current.width;
     tempCanvas.height = qrCodeRef.current.height;
     const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
     
     if (tempCtx) {
-      // Draw original QR to temp canvas
+
       tempCtx.drawImage(qrCodeRef.current, 0, 0);
       
-      // Get image data
+
       const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
       const data = imageData.data;
       
-      // Enhance contrast - make dark pixels pure black
+
       for (let i = 0; i < data.length; i += 4) {
-        // If pixel is not white (not 255)
+
         if (data[i] < 200) {
-          // Make it pure black
+
           data[i] = 0;     // R
           data[i + 1] = 0; // G
           data[i + 2] = 0; // B
         }
       }
       
-      // Put enhanced image data back
+
       tempCtx.putImageData(imageData, 0, 0);
       
-      // Draw enhanced QR code
+
       ctx.drawImage(tempCanvas, padding, padding);
     } else {
-      // Fallback to original QR code if enhancement fails
+
       ctx.drawImage(qrCodeRef.current, padding, padding);
     }
 
-    // Draw UPI logo if available
+
     if (upiLogoLoaded && logoRef.current) {
       const centerX = qrCodeRef.current.width / 2 + padding;
       const centerY = qrCodeRef.current.height / 2 + padding;
       const logoSize = 40;
       
-      // Draw white background for logo
+
       ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(
         centerX - logoSize / 2 - 5,
@@ -130,7 +128,7 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
         logoSize + 10
       );
       
-      // Draw the logo
+
       ctx.drawImage(
         logoRef.current,
         centerX - logoSize / 2,
@@ -140,7 +138,7 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
       );
     }
 
-    // Add text
+
     ctx.font = 'bold 16px Arial';
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
@@ -188,7 +186,7 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
       const canvas = createCanvasWithQR();
       const imgData = canvas.toDataURL('image/png', 1.0);
       
-      // Create PDF with A5 format
+
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -198,17 +196,16 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       
-      // Calculate image dimensions to maintain aspect ratio
-      const imgWidth = 100; // Larger QR code
+      const imgWidth = 100;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
-      // Add title with styling
+
       pdf.setFontSize(22);
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(51, 51, 51);
       pdf.text("UPI QR Code", pageWidth / 2, 25, { align: "center" });
       
-      // Add QR code centered
+
       pdf.addImage(
         imgData, 
         'PNG', 
@@ -218,7 +215,7 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
         imgHeight
       );
       
-      // Add scan instructions
+
       const scanY = 35 + imgHeight + 15;
       pdf.setFontSize(14);
       pdf.setFont("helvetica", "bold");
@@ -231,7 +228,7 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
         pdf.text(`Amount: ₹${data.amount}`, pageWidth / 2, scanY + 8, { align: "center" });
       }
       
-      // Add footer
+
       pdf.setFontSize(8);
       pdf.setTextColor(150, 150, 150);
       pdf.text("Generated with UPI QR Code Generator", pageWidth / 2, pageHeight - 10, { align: "center" });
@@ -245,10 +242,10 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
     }
   };
   
-  // Define QR code colors - neutral colors
+
   const qrCodeColors = {
-    dark: "#000000", // Pure black for better contrast
-    light: "#FFFFFF", // White background
+    dark: "#000000", 
+    light: "#FFFFFF",
   };
   
   return (
@@ -264,7 +261,7 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
           padding: "20px"
         }}
       >
-        {/* Using QRCodeCanvas for better image capture */}
+
         <div className="relative flex items-center justify-center">
           <QRCodeCanvas
             value={buildUpiUrl()}
@@ -274,7 +271,7 @@ export function DownloadableQRCode({ data }: DownloadableQRCodeProps) {
             bgColor={qrCodeColors.light}
             fgColor={qrCodeColors.dark}
           />
-          {/* Center UPI logo */}
+
           {upiLogoLoaded && (
             <div 
               className="absolute flex items-center justify-center" 

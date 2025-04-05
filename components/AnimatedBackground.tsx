@@ -8,7 +8,6 @@ function AnimatedBackground() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
   useEffect(() => {
-    // Set isClient to true when component mounts on client
     setIsClient(true);
     
     const handleMouseMove = (e: MouseEvent) => {
@@ -22,7 +21,6 @@ function AnimatedBackground() {
     };
   }, []);
   
-  // Don't render anything until client-side
   if (!isClient) {
     return null;
   }
@@ -42,9 +40,7 @@ function AnimatedBackground() {
         transition={{ type: "spring", damping: 15 }}
       />
       
-      {/* Static blurred circles instead of animated ones */}
       {Array.from({ length: 15 }).map((_, i) => {
-        // Use deterministic values based on index
         const grayValue = 200 + (i * 3) % 50;
         const width = 100 + (i * 15) % 200;
         const height = 100 + (i * 12) % 200;
@@ -87,7 +83,6 @@ function AnimatedBackground() {
         }} 
       />
       
-      {/* Vignette effect */}
       <div 
         className="absolute inset-0 opacity-30" 
         style={{ 
@@ -98,6 +93,5 @@ function AnimatedBackground() {
   );
 }
 
-// Default export for dynamic import
 export { AnimatedBackground };
 export default AnimatedBackground; 

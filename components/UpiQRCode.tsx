@@ -50,5 +50,5 @@ export function UpiQRCode({ data }: UpiQRCodeProps) {
   );
 }
 
-// Default export for dynamic import
+
 export default UpiQRCode; 

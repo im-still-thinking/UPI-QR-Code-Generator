@@ -4,7 +4,6 @@ import { ClientOnly } from "@/components/ClientOnly";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
-// Dynamically import all components with SSR disabled
 const UpiForm = dynamic(() => import("@/components/UpiForm").then(mod => mod.UpiForm), {
   ssr: false,
 });
@@ -18,7 +17,6 @@ const UpiQRCode = dynamic(() => import("@/components/UpiQRCode").then(mod => mod
   ssr: false,
 });
 
-// Import UpiFormValues type for typechecking
 import type { UpiFormValues } from "@/components/UpiForm";
 
 export default function Home() {

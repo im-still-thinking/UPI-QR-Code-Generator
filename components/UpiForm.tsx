@@ -184,6 +184,6 @@ function UpiForm({ onSubmit }: UpiFormProps) {
   );
 }
 
-// Export both named and default exports for dynamic import
+
 export { UpiForm };
 export default UpiForm; 
